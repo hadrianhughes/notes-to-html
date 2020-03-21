@@ -16,20 +16,35 @@ const openFiles = files =>
       [file]: fs.readFileSync(path.resolve(SRC_DIR, file), 'utf8')
     }), {});
 
-const replaceFileExtension = (fileName, to) => {
+const template = (title, html) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  ${html}
+</body>
+</html>
+`;
+
+const getNameWithoutExtension = fileName => {
   const [name] = fileName.split('.');
-  return `${name}.${to}`;
+  return name;
 };
 
 const markdownToHTML = converter => files =>
   Object.keys(files)
     .reduce((acc, fileName) => {
       const text = files[fileName];
-      const mdName = replaceFileExtension(fileName, 'html');
+      const name = getNameWithoutExtension(fileName);
+      const html = converter.makeHtml(text);
 
       return {
         ...acc,
-        [mdName]: converter.makeHtml(files[fileName])
+        [name + '.html']: template(name, html)
       };
     }, {});
 
