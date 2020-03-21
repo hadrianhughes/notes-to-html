@@ -22,7 +22,8 @@ const template = (title, html) => `
 <head>
   <meta charset="UTF-8">
   <title>${title}</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet" />
 </head>
 <body>
   ${html}
