@@ -16,17 +16,27 @@ const openFiles = files =>
       [file]: fs.readFileSync(path.resolve(SRC_DIR, file), 'utf8')
     }), {});
 
+const replaceFileExtension = (fileName, to) => {
+  const [name] = fileName.split('.');
+  return `${name}.${to}`;
+};
+
 const markdownToHTML = converter => files =>
   Object.keys(files)
-    .reduce((acc, fileName) => ({
-      ...acc,
-      [fileName]: converter.makeHtml(files[fileName])
-    }), {});
+    .reduce((acc, fileName) => {
+      const text = files[fileName];
+      const mdName = replaceFileExtension(fileName, 'html');
+
+      return {
+        ...acc,
+        [mdName]: converter.makeHtml(files[fileName])
+      };
+    }, {});
 
 const writeFiles = files =>
   Object.keys(files)
     .forEach(fileName => {
-      fs.writeFileSync(fileName, files[fileName], 'utf8');
+      fs.writeFileSync(path.resolve(OUT_DIR, fileName), files[fileName], 'utf8');
     });
 
 
