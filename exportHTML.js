@@ -4,26 +4,29 @@ const showdown = require('showdown');
 
 const SRC_DIR = path.resolve(__dirname, '..');
 const OUT_DIR = path.resolve(__dirname, '../html')
+const STYLE_FILE = path.resolve(__dirname, 'style.css');
 
 const getFilesNames = () =>
   fs.readdirSync(SRC_DIR)
     .filter(name => /^.*\.md$/.test(name));
 
-const openFiles = files =>
-  files
-    .reduce((acc, file) => ({
+const mapToObject = (list, fn) =>
+  list
+    .reduce((acc, item) => ({
       ...acc,
-      [file]: fs.readFileSync(path.resolve(SRC_DIR, file), 'utf8')
+      [item]: fn(item)
     }), {});
 
-const template = (title, html) => `
+const openFile = fileName => fs.readFileSync(path.resolve(SRC_DIR, fileName), 'utf8');
+
+const pageTemplate = styles => (title, html) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>${title}</title>
-  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700&display=swap" rel="stylesheet" />
+  <style>${styles}</style>
 </head>
 <body>
   ${html}
@@ -36,7 +39,7 @@ const getNameWithoutExtension = fileName => {
   return name;
 };
 
-const markdownToHTML = converter => files =>
+const markdownToHTML = (template, converter) => files =>
   Object.keys(files)
     .reduce((acc, fileName) => {
       const text = files[fileName];
@@ -57,10 +60,11 @@ const writeFiles = files =>
 
 
 const fileNames = getFilesNames();
-const notes = openFiles(fileNames);
+const notes = mapToObject(fileNames, openFile);
+const styles = openFile(STYLE_FILE);
 
 const sdConverter = new showdown.Converter({ tables: true });
-const converter = markdownToHTML(sdConverter);
+const converter = markdownToHTML(pageTemplate(styles), sdConverter);
 const htmlNotes = converter(notes);
 
 writeFiles(htmlNotes);
