@@ -59,7 +59,7 @@ const writeFiles = files =>
 const fileNames = getFilesNames();
 const notes = openFiles(fileNames);
 
-const sdConverter = new showdown.Converter();
+const sdConverter = new showdown.Converter({ tables: true });
 const converter = markdownToHTML(sdConverter);
 const htmlNotes = converter(notes);
 
