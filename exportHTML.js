@@ -23,7 +23,7 @@ const template = (title, html) => `
   <meta charset="UTF-8">
   <title>${title}</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700&display=swap" rel="stylesheet" />
 </head>
 <body>
   ${html}
